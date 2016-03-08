@@ -1,9 +1,13 @@
 # CollectionBundle
 
+Use code from http://symfony.com/doc/2.8/cookbook/form/form_collections.html
+
 ## Steps:
  
  1. Clone this repository
  2. Install the dependencies `composer install --prefer-dist -vvv --profile`
+ 3. Open `/web/app_dev.php/task`
+ 4. Problem: how to get the form through `$crawler->filter('form')->form()` and add fields?
 
 ## Tests
 
