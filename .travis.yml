@@ -8,7 +8,7 @@ git:
 php:
 #  - 5.5
   - 5.6
-#  - 7.0
+  - 7.0
 #  - hhvm
 
 cache:
@@ -18,7 +18,7 @@ cache:
 env:
 #  - SYMFONY_VERSION="2.7.*"
   - SYMFONY_VERSION="2.8.*"
-#  - SYMFONY_VERSION="3.0.*"
+  - SYMFONY_VERSION="3.0.*"
 
 before_install:
   - if [[ $TRAVIS_PHP_VERSION != '7.0' && $TRAVIS_PHP_VERSION != 'hhvm' ]]; then phpenv config-rm xdebug.ini; fi
