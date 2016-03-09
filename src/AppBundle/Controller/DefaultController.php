@@ -9,6 +9,8 @@ use AppBundle\Entity\Tag;
 use AppBundle\Form\Type\TaskType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class DefaultController extends Controller
@@ -33,8 +35,8 @@ class DefaultController extends Controller
         $object->name = '';
 
         $form = $this->createFormBuilder($object)
-            ->add('name', 'text')
-            ->add('submit', 'submit')
+            ->add('name', TextType::class)
+            ->add('submit', SubmitType::class)
             ->getForm();
 
         $form->handleRequest($request);
@@ -75,13 +77,11 @@ class DefaultController extends Controller
 
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
-            // ... maybe do some form processing, like saving the Task and Tag objects
-            return new Response('<!DOCTYPE html>
-                <html><head><title>-</title></head><body><p>
-                Data submitted: '.$task->getDescription().', '.
-                count($task->getTags()).' tags'.
-                '</p></body></html>');
+        if ($form->isSubmitted()) {
+            $this->addFlash(
+                'notice',
+                'Your changes were saved!'
+            );
         }
 
         return $this->render('AppBundle:Task:new.html.twig', array(

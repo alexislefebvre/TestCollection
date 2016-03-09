@@ -15,7 +15,8 @@ class TaskType extends AbstractType
         $builder->add('description');
 
         $builder->add('tags', CollectionType::class, array(
-            'entry_type' => TagType::class
+            'entry_type' => TagType::class,
+            'allow_add' => true,
         ));
 
         $builder->add('save', SubmitType::class);

@@ -76,26 +76,74 @@ class DefaultControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $crawler = $client->request('GET', '/form');
+        $crawler = $client->request('GET', '/task');
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
-        $this->assertContains('Symfony', $crawler->filter('#container h1')->text());
-        
+
+        $formTag = $crawler->filter('form');
+
+        $this->assertEquals(
+            2,
+            $formTag->filter('ul > li')->count()
+        );
+
         ///// Get the form and set values
-        $form = $crawler->selectButton('Submit')->form();
+        $form = $crawler->selectButton('Save')->form();
 
         // set some values
-        $form['form[name]'] = 'Lucas';
+        $form['task[description]'] = 'Lucas';
 
         // submit the form
-        $crawler = $client->submit(
-            $form,
-            array('missing_field' => 1)
+//        $crawler = $client->submit(
+//            $form,
+//            array('missing_field' => 1)
+//        );
+
+        $values = array_merge_recursive(
+            $form->getPhpValues(),
+            array(
+                'task' => array(
+                    'tags' => array(
+                        // Key will be added automatically.
+                        array('name' => 'tag3'),
+                    )
+                )
+            )
         );
-        
+
+        $crawler = $client->request($form->getMethod(), $form->getUri(), $values, $form->getPhpFiles());
+
+        $this->assertEquals(
+            1,
+            $crawler->filter('div.flash-notice')->count()
+        );
         $this->assertContains(
-            'Lucas',
-            $crawler->filter('p')->text()
+            'Your changes were saved!',
+            $crawler->filter('div.flash-notice')->text()
+        );
+
+        $this->assertEquals(
+            3,
+            $crawler->filter('ul > li')->count()
+        );
+
+        // One value (Tag) has been added.
+        $inputs = $crawler->filter('ul > li input[type="text"]');
+        $this->assertEquals(
+            3,
+            $inputs->count()
+        );
+        $this->assertEquals(
+            'tag1',
+            $inputs->eq(0)->attr('value')
+        );
+        $this->assertEquals(
+            'tag2',
+            $inputs->eq(1)->attr('value')
+        );
+        $this->assertEquals(
+            'tag3',
+            $inputs->eq(2)->attr('value')
         );
     }
 }
